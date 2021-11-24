@@ -35,8 +35,9 @@ class Executor:
         >>> args, returncode, stdout = exe.run() 
     """
 
-    def __init__(self, args:list, catch_out:bool=False, tempdir:Path=None,
-        keep_tempdir:bool=False, cwd:Path=Path.cwd(), verbose:bool=True):
+    def __init__(self, args:list, catch_out:bool=True, dir_out:Path=None,
+        tempdir:Path=None, keep_tempdir:bool=False, cwd:Path=Path.cwd(),
+        verbose:bool=True):
         """
         Initialize the necessary variables to run the program. Override, but
         call parent method with super().__init__(...)
@@ -52,8 +53,10 @@ class Executor:
                 creates an output file called {program}.out in the cwd and saves
                 stdout to that file. If a string is provided, it will be used
                 as a file name for the output file. Defaults to True.
-            tempdir (str, optional): 
-                Name for the directory to create temporary input/output files.
+            dir_out (Path, optional):
+                Directory to save the outputs of the program. Defaults to None.
+            tempdir (Path, optional): 
+                Directory to create temporary input/output files.
                 Defaults to None.
             keep_tempdir (bool, optional): 
                 Whether or not to keep the temporary folder. If False, it will
@@ -70,15 +73,16 @@ class Executor:
         self.cwd = cwd
         self.tempdir = tempdir
         self.verbose = verbose
+        self.dir_out = dir_out
 
         if self.verbose:
             logging.basicConfig(format='%(levelname)s:%(message)s',
                 level=logging.INFO)
 
         if catch_out == True:
-            self.f_stdout = os.path.join(self.cwd, f'{self.program}.out')
+            self.f_stdout = self.cwd / f'{self.program}.out'
         elif isinstance(catch_out, str):
-            self.f_stdout = catch_out
+            self.f_stdout = self.cwd / catch_out
 
     def prepare(self):
         """
@@ -88,11 +92,16 @@ class Executor:
         """
         logging.info('Creating temporary directory...')
         if self.tempdir:
-            if not os.path.isdir(self.tempdir):
-                os.mkdir(self.tempdir)
+            if not self.tempdir.exists():
+                self.tempdir.mkdir()
         else:
             self.tempdir = Path(tempfile.mkdtemp(
                 prefix=self.program+'_'+self.__class__.__name__.lower()+'_'))
+
+        if self.dir_out:
+            if not self.dir_out.exists():
+                logging.info('Creating output directory...')
+                self.dir_out.mkdir(parents=True)
 
 
     def execute(self):

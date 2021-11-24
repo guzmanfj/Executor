@@ -3,10 +3,10 @@ import os, sys, tempfile, shutil
 from subprocess import CalledProcessError
 from pathlib import Path
 
-sys.path.append(os.fspath(Path(Path(__file__).parent.parent, 'executor')))
+sys.path.append(os.fspath(Path(__file__).parent.parent))
 
-from executor import Executor
-from executor import RunError
+from executor.executor import Executor
+from executor.executor import RunError
 
 class ExecutorTest(unittest.TestCase):
     """
@@ -41,6 +41,19 @@ class ExecutorTest(unittest.TestCase):
         self.exe.run()
         
         self.assertTrue(self.tempdir.exists())
+
+    def test_createsSpecifiedOutDir(self):
+        """
+        Creates the specified tempdir
+        """
+        dir_out = self.tempdir / 'output'
+        self.assertFalse(dir_out.exists())
+
+        self.exe = Executor(self.args, catch_out=False, dir_out=dir_out,
+            tempdir=self.tempdir, keep_tempdir=True, verbose=False)
+        self.exe.run()
+        
+        self.assertTrue(dir_out.exists())
 
     def test_removesTempdir(self):
         """
