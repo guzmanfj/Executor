@@ -1,0 +1,22 @@
+# python
+__pycache__/
+*.pyc
+*.egg-info
+dist
+
+# macOS
+.DS_Store
+
+# virtual environment
+env
+
+# IPython
+profile_default/
+ipython_config.py
+
+# vi files
+*~
+[._]*.un~
+
+# vscode
+.vscode/
