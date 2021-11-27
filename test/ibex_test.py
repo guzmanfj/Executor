@@ -1,5 +1,5 @@
 import unittest
-
+import socket
 import os, sys, shutil, tempfile
 from pathlib import Path
 
@@ -59,15 +59,18 @@ class IbexTest(unittest.TestCase):
 
         self.assertEqual(contents, expected_contents)
 
-    # def test_job_submitted(self) -> None:
-    #     """
-    #     Test that the job is submited to ibex successfully. Only to test in ibex.
-    #     """
+    def test_job_submitted(self) -> None:
+        """
+        Test that the job is submited to ibex successfully. Only to test in ibex.
+        """
+        host = socket.gethostname()
+        if host.endswith('.local'):
+            self.skipTest("Needs to be run in ibex.")
 
-    #     jobid = self.ibex.run()
+        jobid = self.ibex.run()
 
-    #     self.assertTrue(jobid.isdigit())
-    #     self.assertTrue(len(jobid)==8)
+        self.assertTrue(jobid.isdigit())
+        self.assertTrue(len(jobid)==8)
 
     def tearDown(self):
         if self.ibex.out_ibex.exists():

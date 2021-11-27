@@ -11,3 +11,4 @@ dependencies:
   - pip
   - build
   - twine
+  - numpy
