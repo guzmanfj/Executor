@@ -35,7 +35,7 @@ class Executor:
         >>> args, returncode, stdout = exe.run() 
     """
 
-    def __init__(self, args:list, catch_out:bool=True, dir_out:Path=None,
+    def __init__(self, args:list, catch_out:bool=True, out_dir:Path=None,
         tempdir:Path=None, keep_tempdir:bool=False, cwd:Path=Path.cwd(),
         verbose:bool=True):
         """
@@ -53,7 +53,7 @@ class Executor:
                 creates an output file called {program}.out in the cwd and saves
                 stdout to that file. If a string is provided, it will be used
                 as a file name for the output file. Defaults to True.
-            dir_out (Path, optional):
+            out_dir (Path, optional):
                 Directory to save the outputs of the program. Defaults to None.
             tempdir (Path, optional): 
                 Directory to create temporary input/output files.
@@ -73,7 +73,7 @@ class Executor:
         self.cwd = cwd
         self.tempdir = tempdir
         self.verbose = verbose
-        self.dir_out = dir_out
+        self.out_dir = out_dir
 
         if self.verbose:
             logging.basicConfig(format='%(levelname)s:%(message)s',
@@ -98,10 +98,10 @@ class Executor:
             self.tempdir = Path(tempfile.mkdtemp(
                 prefix=self.program+'_'+self.__class__.__name__.lower()+'_'))
 
-        if self.dir_out:
-            if not self.dir_out.exists():
+        if self.out_dir:
+            if not self.out_dir.exists():
                 logging.info('Creating output directory...')
-                self.dir_out.mkdir(parents=True)
+                self.out_dir.mkdir(parents=True)
 
 
     def execute(self):
