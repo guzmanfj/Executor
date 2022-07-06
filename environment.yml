@@ -9,6 +9,4 @@ dependencies:
   - python
   - ipython
   - pip
-  - build
-  - twine
   - numpy
