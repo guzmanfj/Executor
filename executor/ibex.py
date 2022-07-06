@@ -139,4 +139,5 @@ class IbexRun(Executor):
         """
         Returns the job id if the submission to sbatch was successful.
         """
-        return re.search(r'\d+', self.completed_process.stdout).group()
+        jobid = re.search(r'\d+', self.completed_process.stdout).group()
+        return int(jobid)
